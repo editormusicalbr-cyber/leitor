@@ -54,12 +54,14 @@ iframe{
     <!-- 📂 ABRIR HTML DO PC -->
     <button onclick="document.getElementById('arquivo').click()">
         📂 Abrir
-    </button>
 
     <!-- 💾 BAIXAR DO GOOGLE DRIVE -->
     <button onclick="baixarGitHub()">
         💾 Baixar
     </button>
+
+    </button>
+    <button onclick="limparHTML()">🗑 Limpar</button>
 
     <input type="file" id="arquivo" accept=".html,.htm" style="display:none" onchange="carregar(event)">
 </div>
@@ -77,10 +79,24 @@ function carregar(event){
     const reader = new FileReader();
 
     reader.onload = function(e){
-        document.getElementById("site").srcdoc = e.target.result;
+
+        const html = e.target.result;
+
+        // Exibe
+        document.getElementById("site").srcdoc = html;
+
+        // Salva na memória
+        localStorage.setItem("ultimoHTML", html);
     }
 
     reader.readAsText(file);
+}
+function limparHTML(){
+
+    localStorage.removeItem("ultimoHTML");
+
+    document.getElementById("site").srcdoc = "";
+
 }
 
 // 💾 BAIXAR DO GOOGLE DRIVE (VERSÃO SIMPLES E FUNCIONAL)
@@ -185,6 +201,15 @@ if ("serviceWorker" in navigator) {
     .catch((err) => console.log("Erro SW:", err));
 
 }
+window.addEventListener("load", () => {
+
+    const html = localStorage.getItem("ultimoHTML");
+
+    if(html){
+        document.getElementById("site").srcdoc = html;
+    }
+
+});
 </script>
 </body>
 </html>
