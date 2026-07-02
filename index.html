@@ -45,6 +45,26 @@ iframe{
     border:none;
     background:white;
 }
+
+#btnMenu{
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:9999;
+
+    width:50px;
+    height:50px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#2563eb;
+    color:#fff;
+    font-size:24px;
+
+    display:none;
+}
+
 </style>
 </head>
 
@@ -55,21 +75,37 @@ iframe{
     <!-- 📂 ABRIR HTML DO PC -->
     <button onclick="document.getElementById('arquivo').click()">
         📂 Abrir
+    </button>
 
     <!-- 💾 BAIXAR DO GOOGLE DRIVE -->
     <button onclick="baixarGitHub()">
         💾 Baixar
     </button>
 
+    <!-- 🗑 LIMPAR -->
+    <button onclick="limparHTML()">
+        🗑 Limpar
     </button>
-    <button onclick="limparHTML()">🗑 Limpar</button>
 
-    <input type="file" id="arquivo" accept=".html,.htm" style="display:none" onchange="carregar(event)">
+    <input type="file" id="arquivo" accept=".html,.htm"
+           style="display:none"
+           onchange="carregar(event)">
+
 </div>
 
 <iframe id="site"></iframe>
 
 <script>
+
+function esconderMenu(){
+    document.querySelector(".topo").style.display = "none";
+    document.getElementById("btnMenu").style.display = "block";
+}
+
+function mostrarMenu(){
+    document.querySelector(".topo").style.display = "flex";
+    document.getElementById("btnMenu").style.display = "none";
+}
 
 // 📂 ABRIR ARQUIVO LOCAL
 function carregar(event){
@@ -83,23 +119,30 @@ function carregar(event){
 
         const html = e.target.result;
 
-        // Exibe
+        // Exibe o HTML
         document.getElementById("site").srcdoc = html;
 
-        // Salva na memória
+        // Salva
         localStorage.setItem("ultimoHTML", html);
+
+        // Esconde o menu
+        esconderMenu();
     }
 
     reader.readAsText(file);
 }
+
 function limparHTML(){
 
     localStorage.removeItem("ultimoHTML");
 
     document.getElementById("site").srcdoc = "";
 
-}
+    // Mostra o menu novamente
+    document.querySelector(".topo").style.display = "flex";
 
+}
+mostrarMenu();
 // 💾 BAIXAR DO GOOGLE DRIVE (VERSÃO SIMPLES E FUNCIONAL)
 function baixarGitHub(){
 
@@ -195,6 +238,7 @@ window.addEventListener("appinstalled", () => {
 });
 
 // Registrar Service Worker
+// Registrar Service Worker
 if ("serviceWorker" in navigator) {
 
   navigator.serviceWorker.register("./service-worker.js")
@@ -202,15 +246,21 @@ if ("serviceWorker" in navigator) {
     .catch((err) => console.log("Erro SW:", err));
 
 }
+
+// Carrega o último HTML salvo
 window.addEventListener("load", () => {
 
     const html = localStorage.getItem("ultimoHTML");
 
     if(html){
         document.getElementById("site").srcdoc = html;
+
+        // Esconde o menu
+        esconderMenu();
     }
 
 });
 </script>
+<button id="btnMenu" onclick="mostrarMenu()">☰</button>
 </body>
 </html>
