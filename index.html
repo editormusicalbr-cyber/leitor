@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#000000">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visualizador HTML</title>
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#111827;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+}
+
+.topo{
+    background:#1f2937;
+    padding:10px;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#2563eb;
+    color:white;
+    font-size:16px;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+iframe{
+    flex:1;
+    width:100%;
+    border:none;
+    background:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topo">
+
+    <!-- 📂 ABRIR HTML DO PC -->
+    <button onclick="document.getElementById('arquivo').click()">
+        📂 Abrir
+    </button>
+
+    <!-- 💾 BAIXAR DO GOOGLE DRIVE -->
+    <button onclick="baixarGitHub()">
+        💾 Baixar
+    </button>
+
+    <input type="file" id="arquivo" accept=".html,.htm" style="display:none" onchange="carregar(event)">
+</div>
+
+<iframe id="site"></iframe>
+
+<script>
+
+// 📂 ABRIR ARQUIVO LOCAL
+function carregar(event){
+
+    const file = event.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+        document.getElementById("site").srcdoc = e.target.result;
+    }
+
+    reader.readAsText(file);
+}
+
+// 💾 BAIXAR DO GOOGLE DRIVE (VERSÃO SIMPLES E FUNCIONAL)
+function baixarGitHub(){
+
+    const a = document.createElement("a");
+    a.href = "https://drive.google.com/uc?export=download&id=1gR8O7PdNTZFIxnlZjEqywH-QaSMFOsBH";
+    a.download = "index.html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+}
+
+</script>
+<style>
+#btnInstall {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+
+  border: none;
+  border-radius: 50px;
+  padding: 14px 20px;
+
+  background: #000;
+  color: #fff;
+
+  font-size: 16px;
+  font-weight: bold;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,.3);
+
+  cursor: pointer;
+
+  display: none;
+
+  transition: all .3s ease;
+}
+
+#btnInstall:hover {
+  transform: scale(1.05);
+}
+</style>
+
+<button id="btnInstall">📲 Instalar App</button>
+
+<script>
+let deferredPrompt;
+
+const btnInstall = document.getElementById("btnInstall");
+
+// Verifica se já está instalado
+function isAppInstalled() {
+  return window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+}
+
+// Se não estiver instalado
+if (!isAppInstalled()) {
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+
+    e.preventDefault();
+
+    deferredPrompt = e;
+
+    btnInstall.style.display = "block";
+  });
+
+}
+
+// Clique no botão
+btnInstall.addEventListener("click", async () => {
+
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+
+  const { outcome } = await deferredPrompt.userChoice;
+
+  console.log("Resultado:", outcome);
+
+  deferredPrompt = null;
+
+  btnInstall.style.display = "none";
+});
+
+// Quando instalar
+window.addEventListener("appinstalled", () => {
+
+  console.log("PWA instalado");
+
+  btnInstall.style.display = "none";
+});
+
+// Registrar Service Worker
+if ("serviceWorker" in navigator) {
+
+  navigator.serviceWorker.register("./service-worker.js")
+    .then(() => console.log("SW registrado"))
+    .catch((err) => console.log("Erro SW:", err));
+
+}
+</script>
+</body>
+</html>
