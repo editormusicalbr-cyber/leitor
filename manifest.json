@@ -1,6 +1,6 @@
 {
-  "name": "Meu Site App",
-  "short_name": "SiteApp",
+  "name": "Online TV",
+  "short_name": "Online TV",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
