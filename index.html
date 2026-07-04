@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -119,8 +120,10 @@ function carregar(event){
 
         const html = e.target.result;
 
-        // Exibe o HTML
-        document.getElementById("site").srcdoc = html;
+window.VISUALIZADOR = true;
+
+// Exibe o HTML
+document.getElementById("site").srcdoc = html;
 
         // Salva
         localStorage.setItem("ultimoHTML", html);
@@ -253,11 +256,14 @@ window.addEventListener("load", () => {
     const html = localStorage.getItem("ultimoHTML");
 
     if(html){
-        document.getElementById("site").srcdoc = html;
 
-        // Esconde o menu
-        esconderMenu();
-    }
+    window.VISUALIZADOR = true;
+
+    document.getElementById("site").srcdoc = html;
+
+    // Esconde o menu
+    esconderMenu();
+}
 
 });
 </script>
